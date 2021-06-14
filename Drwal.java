@@ -1,3 +1,7 @@
+//House of Talents #6 NCDC
+//Autor: Bartosz Smela
+//Zadanie 3: "Drwal"
+
 import java.util.Scanner;
 
 public class Drwal {
