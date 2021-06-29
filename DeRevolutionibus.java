@@ -2,7 +2,6 @@
 //Autor: Bartosz Smela
 //Zadanie 1: "O obrotach sfer niebieskich"
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Scanner;
 
@@ -64,21 +63,15 @@ public class DeRevolutionibus {
     //      \/  \/  \/
     static void calcPlanetsPositions(Planet[] planetsArray, float day) {
         if(day>0){
-            for (int i = 0; i < planetsArray.length; i++) {
-                double angle = planetsArray[i].getSpeed() * day;
-                float cosA = (float)Math.cos(angle%(2*Math.PI)); //stosowanie modulo nie jest konieczne,
+            for (Planet planet : planetsArray) {
+                double angle = planet.getSpeed() * day;
+                float cosA = (float) Math.cos(angle % (2 * Math.PI)); //stosowanie modulo nie jest konieczne,
                 // lecz zrobilem to zeby byl kąt do 360 stopni, akurat tu jest zamieniony na radiany
-                float sinA = (float)Math.sin(angle%(2*Math.PI));
+                float sinA = (float) Math.sin(angle % (2 * Math.PI));
 
-                int multiplier = 0;
-                while(angle-(2*Math.PI)>0){
-                    angle-=(2*Math.PI);
-                    multiplier++;
-                }
-
-                float x = planetsArray[i].getOrbitRay()*cosA*(-1);
-                float y = planetsArray[i].getOrbitRay()*sinA*(-1);
-                planetsArray[i].setPlanetPos(x, y);
+                float x = planet.getOrbitRay() * cosA * (-1);
+                float y = planet.getOrbitRay() * sinA * (-1);
+                planet.setPlanetPos(x, y);
             }
         }else return;
     }
@@ -129,7 +122,7 @@ public class DeRevolutionibus {
 
         int i = 0;
         while(i < array.length-1){
-            DecimalFormat df = new DecimalFormat("0.000");
+            DecimalFormat df = new DecimalFormat("0.00");
             float roundedI = 0f;
             float roundedI2 = 0f;
 
@@ -141,14 +134,13 @@ public class DeRevolutionibus {
                 roundedI2 = Float.parseFloat(df.format(array[i+1].getX()));
             }
 
-            if(Math.abs(roundedI-roundedI2)<0.005){
+            if(Math.abs(roundedI-roundedI2)<0.01){
                 if(array[i].getY()>array[i+1].getY()){
                     array = reduceArray(array, i);
-                    setNullToEnd(array);
                 }else{
                     array = reduceArray(array, i+1);
-                    setNullToEnd(array);
                 }
+                setNullToEnd(array);
                 i=0;
             }else{
                 if(i==array.length-2) {
@@ -160,7 +152,12 @@ public class DeRevolutionibus {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    static void exitProgram(){
+        System.out.println("klops");
+        System.exit(0);
+    }
+
+    public static void main(String[] args){
         ///////////////////
         //      VARIABLES
         //      ||  ||  ||
@@ -171,6 +168,7 @@ public class DeRevolutionibus {
         final int maxCycleTime = 200000;
         float day = Float.parseFloat(args[0]);
         int planetsCount = 0;
+        int centralPlanets = 0;
         Planet [] planetsArray = new Planet [maxPlanetsCount];
         Scanner scanner = new Scanner(System.in);
 
@@ -187,20 +185,34 @@ public class DeRevolutionibus {
 
             planetsArray[i] = new Planet(planetName, planetTime, planetRay, planetRay*(-1), 0, sp);
             if(planetsArray[i].getCycleTime() > maxCycleTime || planetsArray[i].getOrbitRay() > maxOrbitRay){
-                System.out.println("klops");
-                System.exit(0);
+                exitProgram();
             }
             planetsCount = i+1;
         }
 
         if(planetsCount<minPlanetsCount || planetsCount>maxPlanetsCount){
-            System.out.println("klops");
-            System.exit(0);
+            exitProgram();
         }
 
         Planet[] optPlanetsArray = new Planet[planetsCount];
         for (int j = 0; j < planetsCount; j++) {
             optPlanetsArray[j] = planetsArray[j];
+        }
+
+        for (Planet planet : optPlanetsArray) {
+            if (planet.getOrbitRay() == 0) centralPlanets++;
+        }
+
+        if(centralPlanets>1){
+            exitProgram();
+        }
+
+        for (int j = 0; j < optPlanetsArray.length; j++) {
+            for (int l = j+1; l < optPlanetsArray.length; l++) {
+                if(optPlanetsArray[j].getOrbitRay()==optPlanetsArray[l].getOrbitRay()){
+                    exitProgram();
+                }
+            }
         }
 
         calcPlanetsPositions(optPlanetsArray, day);
