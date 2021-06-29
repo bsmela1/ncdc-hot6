@@ -115,16 +115,45 @@ public class Uproszczenia {
         System.out.println(pathLength-n);
     }
 
+    static void exitProgram(){
+        System.out.println("klops");
+        System.exit(0);
+    }
+
     public static void main(String[] args) {
         //VARIABLES
         //   ||
         //   \/
-        String input = args[0];
+        String input = "";
+        if(args.length>0){
+            input = args[0];
+        }else{
+            exitProgram();
+        }
         char[] inputArray = input.toCharArray();
-        int speedMultiplier = Integer.parseInt(Character.toString(inputArray[0]));
-        char direction = inputArray[1];
-        int width = 0;
-        int height = 0;
+        StringBuilder speedMultiplierStr = new StringBuilder();
+        int speedMultiplier=0;
+        char direction = ' ';
+        int width ;
+        int height;
+
+        for (char c: inputArray) {
+            if(c=='N' || c=='S' || c=='W' || c=='E'){
+                direction=c;
+            }else{
+                speedMultiplierStr.append(c);
+            }
+        }
+
+        if(speedMultiplierStr.toString().equals("")){
+            exitProgram();
+        }else{
+            speedMultiplier = Integer.parseInt(speedMultiplierStr.toString());
+        }
+
+        if(speedMultiplier<0 || speedMultiplier>10000){
+            exitProgram();
+        }
 
         if(direction=='N' || direction=='S'){
             width=3+speedMultiplier;
