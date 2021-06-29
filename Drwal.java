@@ -1,7 +1,3 @@
-//House of Talents #6 NCDC
-//Autor: Bartosz Smela
-//Zadanie 3: "Drwal"
-
 import java.util.Scanner;
 
 public class Drwal {
@@ -10,17 +6,28 @@ public class Drwal {
 
         if(inPainting[x][y]==' ') inPainting[x][y]=color;
 
-        if(inPainting[x+1][y]==' ' && (x+1<inPainting.length)){
-            colorPainting(x+1, y, inPainting, color);
+        if(x<inPainting.length-1){
+            if(inPainting[x+1][y]==' '){
+                colorPainting(x+1, y, inPainting, color);
+            }
         }
-        if(inPainting[x-1][y]==' ' && (x-1>0)){
-            colorPainting(x-1, y, inPainting, color);
+
+        if(x>0) {
+            if (inPainting[x - 1][y] == ' ' && (x - 1 > 0)) {
+                colorPainting(x - 1, y, inPainting, color);
+            }
         }
-        if(inPainting[x][y+1]==' ' && (y+1<inPainting[0].length)){
-            colorPainting(x, y+1, inPainting, color);
+
+        if(y<inPainting[0].length-1){
+            if(inPainting[x][y+1]==' ' && (y+1<inPainting[0].length)){
+                colorPainting(x, y+1, inPainting, color);
+            }
         }
-        if(inPainting[x][y-1]==' ' && (y-1>0)){
-            colorPainting(x, y-1, inPainting, color);
+
+        if(y>0){
+            if(inPainting[x][y-1]==' ' && (y-1>0)){
+                colorPainting(x, y-1, inPainting, color);
+            }
         }
     }
 
@@ -31,21 +38,26 @@ public class Drwal {
         int width = Integer.parseInt(args[3]);
         int height = Integer.parseInt(args[4]);
 
-        if(width>5000 || height>5000 || xStart>width || yStart>height){
+        if(width<0 || width>5000 || height<0 || height>5000 || xStart>width || yStart>height){
             System.out.println("klops");
             System.exit(0);
         }
 
+        if(width==0 || height==0){
+            System.exit(0);
+        }
+
         Scanner scanner = new Scanner(System.in);
+        char[][] painting = new char[height][width];
 
-        char[][] painting = new char[width][height];
-
-        for (int i = 0; scanner.hasNext() && i<=height; i++) {
+        for (int i = 0; scanner.hasNext() && i<height; i++) {
             String line = scanner.nextLine();
             int j=0;
             for (char ch: line.toCharArray()) {
-                painting[i][j] = ch;
-                j++;
+                if(j<width){
+                    painting[i][j] = ch;
+                    j++;
+                }
             }
         }
         colorPainting(xStart, yStart, painting, color);
@@ -53,6 +65,7 @@ public class Drwal {
         for (char[] s: painting) {
             System.out.println(s);
         }
+
         System.exit(0);
     }
 }
